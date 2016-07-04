@@ -37,19 +37,26 @@ tinymce.PluginManager.add('example', function(editor, url) {
                         depth = e.data.depth,
                         indentation = e.data.indentation,
                         tableClass = e.data.table_class,
+                        addLinks = e.data.add_links,
                         table;
 
                     contentNode = document.createElement('html');
                     contentNode.innerHTML = tinyMCE.activeEditor.getContent({format : 'raw'});
 
                     higherTitle = getHigherTitle(contentNode);
-                    table = createTable(contentNode, depth, indentation, tableClass, higherTitle);
+                    table = createTable(contentNode, depth, indentation, tableClass, higherTitle, addLinks);
 
                     editor.insertContent(table);
+
+                    _sectionsConcat = '';
+                    _sectionsCounter = [];
                 }
             });
         }
     });
+
+    var _sectionsConcat = '',
+        _sectionsCounter = [];
 
     function getHigherTitle(contentNode) {
         var titles = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -71,7 +78,7 @@ tinymce.PluginManager.add('example', function(editor, url) {
         return higherTitle;
     }
 
-    function createTable(contentNode, depth, indentation, tableClass, higherTitle) {
+    function createTable(contentNode, depth, indentation, tableClass, higherTitle, addLinks) {
         var titles = [],
             capturedTitles,
             currentTitle,
@@ -81,10 +88,11 @@ tinymce.PluginManager.add('example', function(editor, url) {
             orderedTitles,
             titleIndex,
             generatedIndentation,
+            link,
             table;
 
         for (index = 0; index < depth; index++) {
-        	titles.push('h' + (parseInt(higherTitle) + parseInt(index)));
+            titles.push('h' + (parseInt(higherTitle) + parseInt(index)));
         }
 
         for (index = 0; index < titles.length; index++) {
@@ -101,10 +109,15 @@ tinymce.PluginManager.add('example', function(editor, url) {
         table = '<div class="' + tableClass + '">';
 
         for (index = 0; index < orderedTitles.length; index++) {
-        	titleIndex = orderedTitles[index].tagName.toLowerCase().replace('h', '');
-        	generatedIndentation = generateIndentation(higherTitle, titleIndex, indentation);
+            titleIndex = orderedTitles[index].tagName.toLowerCase().replace('h', '');
+            generatedIndentation = generateIndentation(higherTitle, titleIndex, indentation);
+
+            if (addLinks) {
+                link = createLink(higherTitle, titleIndex, index + 1);
+            }
 
             table += generatedIndentation + orderedTitles[index].innerHTML.replace('<br>', '');
+            table += link;
             table += '<br>';
         }
 
@@ -114,17 +127,49 @@ tinymce.PluginManager.add('example', function(editor, url) {
     }
 
     function generateIndentation(higherTitle, currentTitle, indentationLevel) {
-    	var depth,
-    		index,
-    		indentation = '';
+        var depth,
+            index,
+            indentation = '';
 
-    	depth = currentTitle - higherTitle;
+        depth = currentTitle - higherTitle;
 
-    	for (index = 0; index < depth * indentationLevel; index++) {
-    		indentation += '&nbsp;';
-    	}
+        for (index = 0; index < depth * indentationLevel; index++) {
+            indentation += '&nbsp;';
+        }
 
-    	return indentation;
+        return indentation;
+    }
+
+    function createLink(higherTitleIndex, currentTitleIndex, sectionNumber) {
+        var sectionIndex,
+            link,
+            isTopSection,
+            link,
+            index;
+
+        sectionIndex = currentTitleIndex - higherTitleIndex;
+
+        if (_sectionsCounter[sectionIndex] === undefined || _sectionsCounter[sectionIndex] === null) {
+            _sectionsCounter[sectionIndex] = 1
+        } else {
+            _sectionsCounter[sectionIndex]++;
+        }
+
+        link = '#section_';
+
+        for (index = 0; index <= sectionIndex; index++) {
+            link += _sectionsCounter[index] + '_';
+        }
+
+        isTopSection = sectionIndex === 0;
+
+        if (isTopSection) {
+            for (index = 1; index < _sectionsCounter.length; index++) {
+                _sectionsCounter[index] = null;
+            }
+        }
+
+        return link;
     }
 
 });
