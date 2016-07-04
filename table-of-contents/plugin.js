@@ -43,7 +43,7 @@ tinymce.PluginManager.add('example', function(editor, url) {
                     contentNode.innerHTML = tinyMCE.activeEditor.getContent({format : 'raw'});
 
                     higherTitle = getHigherTitle(contentNode);
-                    table = createTable(contentNode, depth, indentation, tableClass);
+                    table = createTable(contentNode, depth, indentation, tableClass, higherTitle);
 
                     editor.insertContent(table);
                 }
@@ -69,7 +69,7 @@ tinymce.PluginManager.add('example', function(editor, url) {
         return higherTitle;
     }
 
-    function createTable(contentNode, depth, indentation, tableClass) {
+    function createTable(contentNode, depth, indentation, tableClass, higherTitle) {
         var titles = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
             capturedTitles,
             currentTitle,
@@ -77,6 +77,8 @@ tinymce.PluginManager.add('example', function(editor, url) {
             index,
             titleIndex,
             orderedTitles,
+            titleIndex,
+            generatedIndentation,
             table;
 
         for (index = 0; index < titles.length; index++) {
@@ -93,13 +95,31 @@ tinymce.PluginManager.add('example', function(editor, url) {
         table = '<div class="' + tableClass + '">';
 
         for (index = 0; index < orderedTitles.length; index++) {
-            table += orderedTitles[index].innerHTML;
+        	titleIndex = orderedTitles[index].tagName.toLowerCase().replace('h', '');
+        	generatedIndentation = generateIndentation(higherTitle, titleIndex, indentation);
+
+            table += generatedIndentation + orderedTitles[index].innerHTML.replace('<br>', '');
             table += '<br>';
         }
 
         table += '</div>';
 
         return table;
+    }
+
+    function generateIndentation(higherTitle, currentTitle, indentationLevel) {
+    	var depth,
+    		index,
+    		indentation = '';
+
+    	higherTitle = higherTitle.toLowerCase().replace('h', '');
+    	depth = currentTitle - higherTitle;
+
+    	for (index = 0; index < depth * indentationLevel; index++) {
+    		indentation += '&nbsp;';
+    	}
+
+    	return indentation;
     }
 
 });
