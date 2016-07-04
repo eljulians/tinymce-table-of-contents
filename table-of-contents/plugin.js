@@ -66,11 +66,13 @@ tinymce.PluginManager.add('example', function(editor, url) {
             }
         }
 
+        higherTitle = higherTitle.toLowerCase().replace('h', '');
+
         return higherTitle;
     }
 
     function createTable(contentNode, depth, indentation, tableClass, higherTitle) {
-        var titles = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+        var titles = [],
             capturedTitles,
             currentTitle,
             className = 'tinymce-table-of-contents',
@@ -80,6 +82,10 @@ tinymce.PluginManager.add('example', function(editor, url) {
             titleIndex,
             generatedIndentation,
             table;
+
+        for (index = 0; index < depth; index++) {
+        	titles.push('h' + (parseInt(higherTitle) + parseInt(index)));
+        }
 
         for (index = 0; index < titles.length; index++) {
             capturedTitles = contentNode.getElementsByTagName(titles[index]);
@@ -112,7 +118,6 @@ tinymce.PluginManager.add('example', function(editor, url) {
     		index,
     		indentation = '';
 
-    	higherTitle = higherTitle.toLowerCase().replace('h', '');
     	depth = currentTitle - higherTitle;
 
     	for (index = 0; index < depth * indentationLevel; index++) {
