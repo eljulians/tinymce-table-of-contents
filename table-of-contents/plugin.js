@@ -88,7 +88,10 @@ tinymce.PluginManager.add('example', function(editor, url) {
             orderedTitles,
             titleIndex,
             generatedIndentation,
-            link,
+            linkLocation,
+            originalId,
+            tableLine,
+            titleValue,
             table;
 
         for (index = 0; index < depth; index++) {
@@ -112,13 +115,25 @@ tinymce.PluginManager.add('example', function(editor, url) {
             titleIndex = orderedTitles[index].tagName.toLowerCase().replace('h', '');
             generatedIndentation = generateIndentation(higherTitle, titleIndex, indentation);
 
+            titleValue = orderedTitles[index].innerHTML.replace('<br>', '');
+            tableLine = generatedIndentation + titleValue + '<br>';
+
             if (addLinks) {
-                link = createLink(higherTitle, titleIndex, index + 1);
+                originalId = orderedTitles[index].id;
+
+                if (originalId === '') {
+                    linkLocation = createLink(higherTitle, titleIndex, index + 1);
+                    addIdToTitle(linkLocation, 'h' + titleIndex.toString(), titleValue);
+
+                    linkLocation = '<a href="' + linkLocation + '">';
+                } else {
+                    linkLocation = '<a href="' + originalId + '">';
+                }
+
+                tableLine = linkLocation + tableLine + '</a>';
             }
 
-            table += generatedIndentation + orderedTitles[index].innerHTML.replace('<br>', '');
-            table += link;
-            table += '<br>';
+            table += tableLine;
         }
 
         table += '</div>';
@@ -144,7 +159,6 @@ tinymce.PluginManager.add('example', function(editor, url) {
         var sectionIndex,
             link,
             isTopSection,
-            link,
             index;
 
         sectionIndex = currentTitleIndex - higherTitleIndex;
@@ -161,6 +175,8 @@ tinymce.PluginManager.add('example', function(editor, url) {
             link += _sectionsCounter[index] + '_';
         }
 
+        link = link.slice(0, -1);
+
         isTopSection = sectionIndex === 0;
 
         if (isTopSection) {
@@ -170,6 +186,26 @@ tinymce.PluginManager.add('example', function(editor, url) {
         }
 
         return link;
+    }
+
+    function addIdToTitle(id, titleTag, titleValue) {
+        var editorDocument = tinyMCE.activeEditor.getBody(),
+            documentTitles,
+            index,
+            titleNode,
+            titleNodeValue;
+
+        documentTitles = editorDocument.getElementsByTagName(titleTag);
+
+        for (index = 0; index < documentTitles.length; index++) {
+            titleNode = documentTitles[index];
+            titleNodeValue = titleNode.innerHTML;
+
+            if (titleNodeValue === titleValue && titleNode.id === '') {
+                titleNode.id = id;
+                break;
+            }
+        }
     }
 
 });
