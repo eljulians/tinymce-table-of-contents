@@ -199,7 +199,7 @@ tinymce.PluginManager.add('example', function(editor, url) {
 
         for (index = 0; index < documentTitles.length; index++) {
             titleNode = documentTitles[index];
-            titleNodeValue = titleNode.innerHTML;
+            titleNodeValue = titleNode.innerHTML.replace('<br>', '');
 
             if (titleNodeValue === titleValue && titleNode.id === '') {
                 titleNode.id = id;
