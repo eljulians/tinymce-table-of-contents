@@ -1,0 +1,4 @@
+before_script:
+  npm install jscs -g
+
+script: jscs table-of-contents/plugin.js
