@@ -1,6 +1,7 @@
 tinymce.PluginManager.add( 'example', function( editor, url ) {
     var _sectionsConcat = '',
-        _sectionsCounter = [];
+        _sectionsCounter = [],
+        _previousDepth = -1;
 
     editor.addMenuItem( 'example', {
         text: 'Table of contents',
@@ -168,8 +169,6 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
         table += '</dl>';
         table += '</div>';
 
-        alert(table);
-
         return table;
      }
 
@@ -193,23 +192,37 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
     function generateIndentation( higherTitle, currentTitle, title ) {
         var depth,
             index,
-            indentation = '';
+            indentation = '',
+            closingListChain = '';
 
         depth = currentTitle - higherTitle;
 
+        if ( depth < _previousDepth && 1 < _previousDepth ) {
+            while (_previousDepth > depth) {
+                closingListChain += '</dl>';
+                _previousDepth--;
+            }
+        }
+
         switch ( true ) {
-            case ( depth === 0 ):
-                title = '<dt>{anchor_start}' + title + '{anchor_end}</dt>';
+            case ( 0 === depth ):
+                title = closingListChain + '<dt>{anchor_start}' + title + '{anchor_end}</dt>';
                 break;
 
-            case ( depth === 1 ):
-                title = '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
+            case ( 1 === depth ):
+                title = closingListChain +'<dd>{anchor_start}' + title + '{anchor_end}</dd>';
                 break;
 
-            case ( depth > 1 ):
-                // TODO
+            case ( 1 < depth ):
+                if ( depth > _previousDepth) {
+                    title = closingListChain + '<dl><dd>{anchor_start}' + title + '{anchor_end}</dd>';
+                } else {
+                    title = closingListChain + '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
+                }
                 break;
         }
+
+        _previousDepth = depth;
 
         return title;
      }
