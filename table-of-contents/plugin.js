@@ -262,7 +262,7 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
             titleNode,
             titleNodeValue;
 
-        id = location.substring(1);
+        id = location.substring( 1 );
         documentTitles = editorDocument.getElementsByTagName( titleTag );
 
         for ( index = 0; index < documentTitles.length; index++ ) {
