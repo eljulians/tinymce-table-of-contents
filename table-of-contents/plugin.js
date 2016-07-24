@@ -131,13 +131,16 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
         orderedTitles = contentNode.getElementsByClassName( className );
 
         table = '<div class="' + tableClass + '">';
+        table += '<dl>';
 
         for ( index = 0; index < orderedTitles.length; index++ ) {
             titleIndex = orderedTitles[index].tagName.toLowerCase(  ).replace( 'h', '' );
-            generatedIndentation = generateIndentation( higherTitle, titleIndex, indentation );
 
             titleValue = orderedTitles[index].innerHTML.replace( '<br>', '' );
-            tableLine = generatedIndentation + titleValue + '<br>';
+
+            generatedIndentation = generateIndentation( higherTitle, titleIndex, titleValue );
+
+            tableLine = generatedIndentation;
 
             if ( addLinks ) {
                 originalId = orderedTitles[index].id;
@@ -147,17 +150,25 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
                     addIdToTitle( linkLocation, 'h' + titleIndex.toString(  ), titleValue );
 
                     linkLocation = '<a href="' + linkLocation + '">';
+
                  } else {
                     linkLocation = '<a href="' + originalId + '">';
                  }
 
-                tableLine = linkLocation + tableLine + '</a>';
-             }
+                tableLine = tableLine.replace('{anchor_start}', linkLocation);
+                tableLine = tableLine.replace('{anchor_end}', '</a>');
+            } else {
+                tableLine = tableLine.replace('{anchor_start}', '');
+                tableLine = tableLine.replace('{anchor_end}', '');
+            }
 
             table += tableLine;
          }
 
+        table += '</dl>';
         table += '</div>';
+
+        alert(table);
 
         return table;
      }
@@ -171,24 +182,36 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
      * Then, the number of spaces is just the depth multiplied by the indentation level. '&nbsp;' entity is used
      * because seems that the whitespaces are being ignored.
      *
+     * The "switch (true)" is a trick for using a switch to evaluate ranges.
+     *
      * @param { int } higherTitle - The higher title index ( 1 for h1, 2 for h2, etc. ) for the document.
      * @param { int } currentTitle - The title index of the table of contents entry for which the indentation is going to
      *     be calculated for.
-     * @param { int } indentationLevel - The indentation level, in spaces, specified by the user.
-     * @param { string } String with whitespaces as indentation.
+     * @param { int } title - The title name.
+     * @return { string } String with whitespaces as indentation.
      */
-    function generateIndentation( higherTitle, currentTitle, indentationLevel ) {
+    function generateIndentation( higherTitle, currentTitle, title ) {
         var depth,
             index,
             indentation = '';
 
         depth = currentTitle - higherTitle;
 
-        for ( index = 0; index < depth * indentationLevel; index++ ) {
-            indentation += '&nbsp;';
-         }
+        switch ( true ) {
+            case ( depth === 0 ):
+                title = '<dt>{anchor_start}' + title + '{anchor_end}</dt>';
+                break;
 
-        return indentation;
+            case ( depth === 1 ):
+                title = '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
+                break;
+
+            case ( depth > 1 ):
+                // TODO
+                break;
+        }
+
+        return title;
      }
 
     /**
