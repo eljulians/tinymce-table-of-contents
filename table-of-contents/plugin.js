@@ -250,17 +250,19 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
      *
      * The id is only added if the corresponding title has no id assigned, not to override the original id.
      *
-     * @param { strig } id - The id to add to the tag.
+     * @param { strig } location - The the location of the section (#section_x).
      * @param { string } titleTag - The title tag ( h1, h2, etc. ) the tag to add the id corresponds to.
      * @param { string } titleValue - The value of the tag to add the id to, necessary to find its node.
      */
-    function addIdToTitle( id, titleTag, titleValue ) {
+    function addIdToTitle( location, titleTag, titleValue ) {
         var editorDocument = tinyMCE.activeEditor.getBody(  ),
+            id,
             documentTitles,
             index,
             titleNode,
             titleNodeValue;
 
+        id = location.substring(1);
         documentTitles = editorDocument.getElementsByTagName( titleTag );
 
         for ( index = 0; index < documentTitles.length; index++ ) {
