@@ -156,11 +156,11 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
                     linkLocation = '<a href="' + originalId + '">';
                  }
 
-                tableLine = tableLine.replace('{anchor_start}', linkLocation);
-                tableLine = tableLine.replace('{anchor_end}', '</a>');
+                tableLine = tableLine.replace( '{anchor_start}', linkLocation );
+                tableLine = tableLine.replace( '{anchor_end}', '</a>' );
             } else {
-                tableLine = tableLine.replace('{anchor_start}', '');
-                tableLine = tableLine.replace('{anchor_end}', '');
+                tableLine = tableLine.replace( '{anchor_start}', '' );
+                tableLine = tableLine.replace( '{anchor_end}', '' );
             }
 
             table += tableLine;
@@ -198,7 +198,7 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
         depth = currentTitle - higherTitle;
 
         if ( depth < _previousDepth && 1 < _previousDepth ) {
-            while (_previousDepth > depth) {
+            while ( _previousDepth > depth ) {
                 closingListChain += '</dl>';
                 _previousDepth--;
             }
@@ -210,11 +210,11 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
                 break;
 
             case ( 1 === depth ):
-                title = closingListChain +'<dd>{anchor_start}' + title + '{anchor_end}</dd>';
+                title = closingListChain + '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
                 break;
 
             case ( 1 < depth ):
-                if ( depth > _previousDepth) {
+                if ( depth > _previousDepth ) {
                     title = closingListChain + '<dl><dd>{anchor_start}' + title + '{anchor_end}</dd>';
                 } else {
                     title = closingListChain + '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
