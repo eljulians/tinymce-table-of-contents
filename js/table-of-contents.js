@@ -6,11 +6,11 @@
     tinymce.PluginManager.add( 'table_of_contents', function( editor, url ) {
 
         // Add Button to Visual Editor Toolbar
-        editor.addButton('table_of_contents', {
+        editor.addButton( 'table_of_contents', {
             title: 'Table of contents',
-            cmd: 'table_of_contents',
+            cmd: 'table_of_contents'
         });
-        editor.addCommand( 'table_of_contents', function(){
+        editor.addCommand( 'table_of_contents', function() {
             editor.windowManager.open( {
                 title: 'Table of contents',
                 body: [
@@ -135,17 +135,14 @@
 
         orderedTitles = contentNode.getElementsByClassName( className );
 
-        table = '<div class="' + tableClass + '">';
-        table += '<dl>';
+        table = '<div class="tinymce-table-of-contents ' + tableClass + '">';
 
         for ( index = 0; index < orderedTitles.length; index++ ) {
             titleIndex = orderedTitles[index].tagName.toLowerCase(  ).replace( 'h', '' );
 
             titleValue = orderedTitles[index].innerHTML.replace( '<br>', '' );
 
-            generatedIndentation = generateIndentation( higherTitle, titleIndex, titleValue );
-
-            tableLine = generatedIndentation;
+            generatedIndentation = generateIndentation( higherTitle, titleIndex, indentation );
 
             if ( addLinks ) {
                 originalId = orderedTitles[index].id;
@@ -160,17 +157,14 @@
                     linkLocation = '<a href="' + originalId + '">';
                  }
 
-                tableLine = tableLine.replace( '{anchor_start}', linkLocation );
-                tableLine = tableLine.replace( '{anchor_end}', '</a>' );
+                tableLine = generatedIndentation + linkLocation + titleValue + '</a>' + '<br>';
             } else {
-                tableLine = tableLine.replace( '{anchor_start}', '' );
-                tableLine = tableLine.replace( '{anchor_end}', '' );
+                tableLine = generatedIndentation + titleValue + '<br>';
             }
 
             table += tableLine;
          }
 
-        table += '</dl>';
         table += '</div>';
 
         return table;
@@ -182,74 +176,30 @@
      * example, if the higher, parent title is <h2>, and the current title is <h2>, then the depth would be 0; 1 for
      * <h3>, etc. ( obviously, the number of the heading tags is passed, and not all the <hX> tag ).
      *
-     * For the indentation, description lists (<dl>) are used. The first attempt had been just adding leading spaces,
-     * but the resulting table was a bit ugly (the leading spaces where also selectable, if links were included).
-     *
-     * The format of a table of contents created with description list is the following:
-     *
-     * <dl>
-     *     <dt>1.</dt>
-     *     <dd>1.1.</dd>
-     *     <dl>
-     *         <dd>1.1.1.</dd>
-     *         <dl>
-     *             <dd>1.1.1.1.</dd>
-     *             <dl>
-     *                 <dd>1.1.1.1.1.</dd>
-     *             </dl>
-     *         </dl>
-     *     </dl>
-     * </dl>
-     *
-     * And so on.
-     *
-     * The "switch (true)" is a trick for using a switch to evaluate ranges.
+     * Then, the number of spaces is just the depth multiplied by the indentation level. '&nbsp;' entity is used
+     * because seems that the whitespaces are being ignored.
      *
      * @param { int } higherTitle - The higher title index ( 1 for h1, 2 for h2, etc. ) for the document.
      * @param { int } currentTitle - The title index of the table of contents entry for which the indentation is going to
      *     be calculated for.
-     * @param { int } title - The title name.
-     * @return { string } String with whitespaces as indentation.
+     * @param { int } indentationLevel - The indentation level, in spaces, specified by the user.
+     * @param { string } String with whitespaces as indentation.
      */
-    function generateIndentation( higherTitle, currentTitle, title ) {
+    function generateIndentation( higherTitle, currentTitle, indentationLevel ) {
         var depth,
             index,
-            indentation = '',
-            closingListChain = '';
+            indentation = '';
 
         depth = currentTitle - higherTitle;
 
-        if ( depth < _previousDepth && 1 < _previousDepth ) {
-
-            while ( _previousDepth > depth ) {
-                closingListChain += '</dl>';
-                _previousDepth--;
-            }
+        for ( index = 0; index < depth * indentationLevel; index++ ) {
+            indentation += '&nbsp;';
         }
 
+        indentation = '<span style="white-space: pre;">' + indentation + '</span>';
 
-        switch ( true ) {
-            case ( 0 === depth ):
-                title = closingListChain + '<dt>{anchor_start}' + title + '{anchor_end}</dt>';
-                break;
-
-            case ( 1 === depth ):
-                title = closingListChain + '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
-                break;
-
-            case ( 1 < depth ):
-                if ( depth > _previousDepth ) {
-                    title = closingListChain + '<dl><dd>{anchor_start}' + title + '{anchor_end}</dd>';
-                } else {
-                    title = closingListChain + '<dd>{anchor_start}' + title + '{anchor_end}</dd>';
-                }
-                break;
-        }
-
-        _previousDepth = depth;
-
-        return title;
-     }
+        return indentation;
+	}
 
     /**
      * Creates the link for the element of the table of contents that points to the corresponding title section in the
