@@ -1,12 +1,16 @@
-tinymce.PluginManager.add( 'example', function( editor, url ) {
+(function() {
     var _sectionsConcat = '',
         _sectionsCounter = [],
         _previousDepth = -1;
 
-    editor.addMenuItem( 'example', {
-        text: 'Table of contents',
-        context: 'tools',
-        onclick: function(  ) {
+    tinymce.PluginManager.add( 'table_of_contents', function( editor, url ) {
+
+        // Add Button to Visual Editor Toolbar
+        editor.addButton('table_of_contents', {
+            title: 'Table of contents',
+            cmd: 'table_of_contents',
+        });
+        editor.addCommand( 'table_of_contents', function(){
             editor.windowManager.open( {
                 title: 'Table of contents',
                 body: [
@@ -36,7 +40,7 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
                      }
                 ],
                 onsubmit: function( e ) {
-                    var contentNode,
+                     var contentNode,
                         higherTitle,
                         depth = e.data.depth,
                         indentation = e.data.indentation,
@@ -48,16 +52,16 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
                     contentNode.innerHTML = tinyMCE.activeEditor.getContent( { format: 'raw' } );
 
                     higherTitle = getHigherTitle( contentNode );
-                    table = createTable( contentNode, depth, indentation, tableClass, higherTitle, addLinks );
 
+                    table = createTable( contentNode, depth, indentation, tableClass, higherTitle, addLinks );
                     editor.insertContent( table );
 
                     _sectionsConcat = '';
                     _sectionsCounter = [];
                  }
              } );
-         }
-     } );
+        });
+    });
 
     /**
      * Gets the higher title of the document. This is necessary because we don't know if the content in the editor is
@@ -169,8 +173,6 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
         table += '</dl>';
         table += '</div>';
 
-        alert(table);
-
         return table;
      }
 
@@ -218,11 +220,13 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
         depth = currentTitle - higherTitle;
 
         if ( depth < _previousDepth && 1 < _previousDepth ) {
+
             while ( _previousDepth > depth ) {
                 closingListChain += '</dl>';
                 _previousDepth--;
             }
         }
+
 
         switch ( true ) {
             case ( 0 === depth ):
@@ -330,6 +334,5 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
                 break;
              }
          }
-     }
-
- } );
+    }
+})();
