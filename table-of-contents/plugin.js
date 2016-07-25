@@ -169,6 +169,8 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
         table += '</dl>';
         table += '</div>';
 
+        alert(table);
+
         return table;
      }
 
@@ -178,8 +180,26 @@ tinymce.PluginManager.add( 'example', function( editor, url ) {
      * example, if the higher, parent title is <h2>, and the current title is <h2>, then the depth would be 0; 1 for
      * <h3>, etc. ( obviously, the number of the heading tags is passed, and not all the <hX> tag ).
      *
-     * Then, the number of spaces is just the depth multiplied by the indentation level. '&nbsp;' entity is used
-     * because seems that the whitespaces are being ignored.
+     * For the indentation, description lists (<dl>) are used. The first attempt had been just adding leading spaces,
+     * but the resulting table was a bit ugly (the leading spaces where also selectable, if links were included).
+     *
+     * The format of a table of contents created with description list is the following:
+     *
+     * <dl>
+     *     <dt>1.</dt>
+     *     <dd>1.1.</dd>
+     *     <dl>
+     *         <dd>1.1.1.</dd>
+     *         <dl>
+     *             <dd>1.1.1.1.</dd>
+     *             <dl>
+     *                 <dd>1.1.1.1.1.</dd>
+     *             </dl>
+     *         </dl>
+     *     </dl>
+     * </dl>
+     *
+     * And so on.
      *
      * The "switch (true)" is a trick for using a switch to evaluate ranges.
      *
