@@ -1,4 +1,5 @@
 before_script:
-  npm install jscs -g
+  - npm install -g grunt-cli
+  - npm install
 
-script: jscs js/table-of-contents.js
+script: grunt default

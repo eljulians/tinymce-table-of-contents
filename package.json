@@ -1,0 +1,31 @@
+{
+  "name": "tinymce-table-of-contents",
+  "version": "1.0.0",
+  "description": "Completely automated and instantaneous way of generating tables of contents for posts.",
+  "main": "js/table-of-contents.js",
+  "dependencies": {
+    "grunt": "~1.0.1",
+    "grunt-contrib-uglify": "~1.0.2"
+  },
+  "devDependencies": {
+    "grunt-jscs": "~3.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julenpardo/tinymce-table-of-contents"
+  },
+  "keywords": [
+    "tinymce",
+    "javascript",
+    "js",
+    "wordpress"
+  ],
+  "author": "Julen Pardo",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/julenpardo/tinymce-table-of-contents/issues"
+  }
+}

@@ -34,38 +34,38 @@ class TinyMCE_Table_of_Contents {
      * TinyMCE_Table_of_Contents class constructor.
      */
     public function __construct() {
-    	if ( is_admin() ) {
-    		add_action( 'init', array( $this, 'setup_tinymce_plugin' ) );
-    	}
+        if ( is_admin() ) {
+            add_action( 'init', array( $this, 'setup_tinymce_plugin' ) );
+        }
     }
 
     /**
      * Initializes the plugin.
      */
     public function setup_tinymce_plugin() {
-			
-		if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
-			return;
-		}
+            
+        if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
+            return;
+        }
 
-		if ( get_user_option( 'rich_editing' ) !== 'true' ) {
-		    return;
-		}
+        if ( get_user_option( 'rich_editing' ) !== 'true' ) {
+            return;
+        }
 
-		add_filter( 'mce_external_plugins', array( $this, 'add_tinymce_plugin' ) );
-		add_filter( 'mce_buttons', array( $this, 'add_tinymce_toolbar_button' ) );
+        add_filter( 'mce_external_plugins', array( $this, 'add_tinymce_plugin' ) );
+        add_filter( 'mce_buttons', array( $this, 'add_tinymce_toolbar_button' ) );
     }
 
     public function add_tinymce_plugin( $plugin_array ) {
-    	$plugin_array['table_of_contents'] = plugin_dir_url( __FILE__ ) . '/js/table-of-contents.js';
+        $plugin_array['table_of_contents'] = plugin_dir_url( __FILE__ ) . '/js/table-of-contents.min.js';
 
-    	return $plugin_array;
+        return $plugin_array;
     }
 
     public function add_tinymce_toolbar_button( $buttons ) {
-    	array_push( $buttons, '|', 'table_of_contents' );
+        array_push( $buttons, '|', 'table_of_contents' );
 
-    	return $buttons;
+        return $buttons;
     }
 }
 

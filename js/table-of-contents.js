@@ -34,7 +34,8 @@
         // Add Button to Visual Editor Toolbar
         editor.addButton( 'table_of_contents', {
             title: 'Table of contents',
-            cmd: 'table_of_contents'
+            cmd: 'table_of_contents',
+            image: url + '/../img/table-of-contents.png'
         });
         editor.addCommand( 'table_of_contents', function() {
             editor.windowManager.open( {
@@ -225,7 +226,7 @@
         indentation = '<span style="white-space: pre;">' + indentation + '</span>';
 
         return indentation;
-	}
+    }
 
     /**
      * Creates the link for the element of the table of contents that points to the corresponding title section in the
