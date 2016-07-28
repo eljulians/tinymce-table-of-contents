@@ -63,7 +63,7 @@ class TinyMCE_Table_of_Contents {
     }
 
     public function add_tinymce_toolbar_button( $buttons ) {
-        array_push( $buttons, '|', 'table_of_contents' );
+        array_push( $buttons, 'table_of_contents' );
 
         return $buttons;
     }

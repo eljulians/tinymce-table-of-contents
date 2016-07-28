@@ -1,7 +1,7 @@
 TinyMCE Table of Contents creator
 =================================
 
-[![Build Status](https://api.travis-ci.org/julenpardo/tinymce-table-of-contents.svg)](https://travis-ci.com/julenpardo/tinymce-table-of-contents) ![Release](https://img.shields.io/badge/release-v1.0--rc2-blue.svg) ![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
+[![Build Status](https://api.travis-ci.org/julenpardo/tinymce-table-of-contents.svg)](https://travis-ci.com/julenpardo/tinymce-table-of-contents) ![Release](https://img.shields.io/badge/release-v1.0-blue.svg) ![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
 
 A plugin for TinyMCE text editor & WordPress for creating tables of contents in an incredibly easy and personalizable way.
 
@@ -25,3 +25,14 @@ The format of the generated `id` is `section_x`, `section_x_y`, etc. Then, the l
  2. Unzip the contents into a `table-of-contents` named folder.
  3. Copy the folder into `/path/to/wordpress/wp-content/plugins`.
  4. Enable it from WordPress.
+
+## Screenshots
+
+![Icon](img/screenshots/screenshot-1.png)
+*TinyMCE Table of Contents in the editor*
+
+![Options](img/screenshots/screenshot-2.png)
+*Options for creating table of contents*
+
+![Generated table](img/screenshots/screenshot-3.png)
+*Generated table of contents*
